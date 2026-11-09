@@ -30,19 +30,33 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Install Capacitor
+        run: |
+          npm install @capacitor/core @capacitor/android --legacy-peer-deps
+          npm install -D @capacitor/cli --legacy-peer-deps
+
+      - name: Check Capacitor
+        run: npx cap --version
+
       - name: Build React Application
         run: npm run build
 
-      - name: Setup Capacitor Android
+      - name: Initialize Capacitor If Needed
+        run: |
+          if [ ! -f capacitor.config.ts ] && [ ! -f capacitor.config.json ]; then
+            npx cap init "Nudge Keyboard" "com.nudge.keyboard" --web-dir=dist
+          fi
+
+      - name: Add Android Platform
         run: |
           if [ ! -d android ]; then
             npx cap add android
           fi
 
-      - name: Sync Android Project
+      - name: Sync Android
         run: npx cap sync android
 
-      - name: Build Debug APK
+      - name: Build APK
         run: |
           chmod +x android/gradlew
           cd android
