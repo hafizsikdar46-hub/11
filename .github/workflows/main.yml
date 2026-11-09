@@ -1,5 +1,5 @@
 
-name: Build Hafiz Keyboard APK
+name: Build Nudge Keyboard APK
 
 on:
   workflow_dispatch:
@@ -9,10 +9,11 @@ on:
 
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Java
@@ -21,29 +22,37 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
 
-      - - name: Install dependencies
-          run: npm install
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Build React
+      - name: Build React Application
         run: npm run build
 
-      - name: Sync Android
+      - name: Setup Capacitor Android
+        run: |
+          if [ ! -d android ]; then
+            npx cap add android
+          fi
+
+      - name: Sync Android Project
         run: npx cap sync android
 
-      - name: Build APK
+      - name: Build Debug APK
         run: |
           chmod +x android/gradlew
           cd android
           ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Nudge keyboard 
+          name: Nudge-Keyboard-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          
+          if-no-files-found: error
+          retention-days: 7
