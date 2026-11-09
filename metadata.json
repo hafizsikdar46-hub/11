@@ -1,0 +1,6 @@
+{
+  "name": "Nudge Keyboard",
+  "description": "Minimalist, privacy-first QWERTY Android keyboard MVP with transparent autocorrect, personal dictionary, and iOS-inspired polish.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
